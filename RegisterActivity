@@ -1,0 +1,89 @@
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class RegisterActivity extends AppCompatActivity {
+
+    private EditText etUsername, etEmail, etPassword, etConfirmPassword, etMobile, etIdNumber;
+    private Button btnRegister;
+
+    // Regex patterns
+    private static final String USERNAME_PATTERN = "^[a-zA-Z0-9._-]{3,}$"; // At least 3 characters, alphanumeric
+    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@(gmail|yahoo)\\.com$"; // Gmail or Yahoo
+    private static final String ID_NUMBER_PATTERN = "^\\d{16}$"; // Exactly 16 digits
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register); // Adjust to your layout file name
+
+        etUsername = findViewById(R.id.et_register_username);
+        etEmail = findViewById(R.id.et_register_email);
+        etPassword = findViewById(R.id.et_register_password);
+        etConfirmPassword = findViewById(R.id.et_register_confirm_password);
+        etMobile = findViewById(R.id.et_register_mobile);
+        etIdNumber = findViewById(R.id.et_register_id_number);
+        btnRegister = findViewById(R.id.btn_register);
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                validateFields();
+            }
+        });
+    }
+
+    private void validateFields() {
+        String username = etUsername.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+        String confirmPassword = etConfirmPassword.getText().toString().trim();
+        String mobile = etMobile.getText().toString().trim();
+        String idNumber = etIdNumber.getText().toString().trim();
+
+        // Validate Username
+        if (TextUtils.isEmpty(username) || !username.matches(USERNAME_PATTERN)) {
+            etUsername.setError("Valid username (min 3 characters) is required");
+            return;
+        }
+
+        // Validate Email
+        if (TextUtils.isEmpty(email) || !email.matches(EMAIL_PATTERN)) {
+            etEmail.setError("Valid email (Gmail or Yahoo) is required");
+            return;
+        }
+
+        // Validate Password
+        if (TextUtils.isEmpty(password) || password.length() < 6) {
+            etPassword.setError("Password must be at least 6 characters");
+            return;
+        }
+
+        // Validate Confirm Password
+        if (!confirmPassword.equals(password)) {
+            etConfirmPassword.setError("Passwords do not match");
+            return;
+        }
+
+        // Validate Mobile (optional, depending on your requirements)
+        if (TextUtils.isEmpty(mobile)) {
+            etMobile.setError("Phone number is required");
+            return;
+        }
+
+        // Validate ID Number
+        if (TextUtils.isEmpty(idNumber) || !idNumber.matches(ID_NUMBER_PATTERN)) {
+            etIdNumber.setError("ID number must be exactly 16 digits");
+            return;
+        }
+
+        // If all validations pass, proceed with registration logic
+        Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show();
+        // RegisterUser(username, email, password, mobile, idNumber); // Call your registration method here
+    }
+}
